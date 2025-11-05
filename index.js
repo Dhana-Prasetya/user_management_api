@@ -21,6 +21,6 @@ app.use(helmet());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(process.env.BACKEND_RUNNING_PORT || 5000, () => {
     console.log('Server running...');
 });

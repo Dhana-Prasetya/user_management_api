@@ -6,8 +6,15 @@ dotenv.config();
 
 export const register = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        const hashed = await bcrypt.hash(password, 10);
+    const { username, email, password } = req.body;
+
+    const dupeCheck = await pool.query('SELECT email FROM users WHERE email = $1', [email]);
+
+    if(dupeCheck){
+        return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
         const query = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email';
         const { rows } = await pool.query(query, [username, email, hashed]);
         res.status(201).json({ message: 'User registered', user: rows[0] });
